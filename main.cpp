@@ -8,7 +8,7 @@
 #include <thread>
 #include <string>
 #include "CoarseGrainedHashSet.h"
-//#include "HashSetGCC_Libitm.h"
+#include "HashSetGCC_Libitm.h"
 #include "HashSetGCC_RTM.h"
 
 void threadJob(HashSet* set, int id)
@@ -113,42 +113,34 @@ void test(HashSet* set) {
 
 int main(int argc, char** argv)
 {
-    /*
     if(argc != 6)
     {
         std::cout << "Usage: test <coarse-lock | gcc-libitm | gcc-rtm | > <threads_count> <upper_limit> <add_percentage> <remove_percentage>\n";
         exit(1);
     }
-     */
 
-    HashSet* set;
+    HashSet* set = nullptr;
 
-    //if(std::string(argv[1]) == "coarse-lock") {
-     //   set = new CoarseGrainedHashSet();
-    //}
-    //else if(std::string(argv[1]) == "gcc-libitm") {
-    //    set = new HashSetGCC_Libitm();
-    //}
-    //else if(std::string(argv[1]) == "gcc-rtm") {
+    if(std::string(argv[1]) == "coarse-lock") {
+       set = new CoarseGrainedHashSet();
+    }
+    else if(std::string(argv[1]) == "gcc-libitm") {
+        set = new HashSetGCC_Libitm();
+    }
+    else if(std::string(argv[1]) == "gcc-rtm") {
         set = new HashSetGCC_RTM();
-    //}
-    //else {
-    //    std::cout << "The lock implementation is unknown.\n";
-    //    exit(1);
-    //}
-/*
+    }
+    else {
+        std::cout << "The lock implementation is unknown.\n";
+        exit(1);
+    }
+
     int threadCount = std::stoi(argv[2]);
     int upperLimit = std::stoi(argv[3]);
     int addPerc = std::stoi(argv[4]);
     int removePerc = std::stoi(argv[5]);
-    */
 
-    int threadCount = 2;
-    int upperLimit = 1000000;
-    int addPerc = 20;
-    int removePerc = 25;
-
-    test(set);
+    //test(set);
 
     /*std::cout << "Benchmark... ";*/
     benchmark(set, upperLimit, threadCount, addPerc, removePerc);
