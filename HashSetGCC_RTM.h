@@ -16,7 +16,7 @@
 class HashSetGCC_RTM : public SequentialHashSet {
 protected:
     void resize() override {
-        int status, attempts = 0;
+        size_t status;
         for(int i = 0 ; i < RTM_ATTEMPTS ; ++i)
         {
             status = _xbegin();
@@ -24,7 +24,7 @@ protected:
                 if (!(rmutex.isLocked())) {
                     SequentialHashSet::resize();
                     _xend();
-                    return result;
+                    return;
                 }
                 _xabort(0xFF);
             }
@@ -51,7 +51,7 @@ public:
 
     bool add(int item) override {
         bool result;
-        int status, attempts = 0;
+        size_t status;
         for(int i = 0 ; i < RTM_ATTEMPTS ; ++i)
         {
             status = _xbegin();
@@ -78,7 +78,7 @@ public:
 
     bool remove(int item) override {
         bool result;
-        int status, attempts = 0;
+        size_t status;
         for(int i = 0 ; i < RTM_ATTEMPTS ; ++i)
         {
             status = _xbegin();
@@ -105,7 +105,7 @@ public:
 
     bool contains(int item) override {
         bool result;
-        int status, attempts = 0;
+        size_t status;
         for(int i = 0 ; i < RTM_ATTEMPTS ; ++i)
         {
             status = _xbegin();
