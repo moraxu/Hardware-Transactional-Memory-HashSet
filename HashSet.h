@@ -38,22 +38,19 @@ protected:
     };
 
     std::vector<std::vector<int>> table;
-    size_t setSize;
 
-    explicit HashSet(int initCapacity) : table(initCapacity), setSize{0} {
+    explicit HashSet(int initCapacity) : table(initCapacity) {
 
     }
 
-    bool policy() {    //only called when already holding a lock
-        return setSize / table.size() > 4;
-    }
-
+    virtual bool policy() = 0; //only called when already holding a lock
     virtual void resize() = 0;
 
 public:
     virtual bool add(int item) = 0;
     virtual bool remove(int item) = 0;
     virtual bool contains(int item) = 0;
+    virtual int size() = 0;
 };
 
 #endif //HASHSETHTM_HASHSET_H

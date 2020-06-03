@@ -2,7 +2,7 @@
 import subprocess
 
 # Produces a CSV formatted table with ops/millisecs throughput values in each cell
-limit = 1000000
+limit = 100000
 threadNums = [1, 2, 4, 6, 8]
 benchmark = "./test.o"
 for add, remove in [(18, 25), (4, 4)]:
@@ -15,7 +15,7 @@ for add, remove in [(18, 25), (4, 4)]:
         print(", " + str(threads) + "T", end="")
     print("")
 
-    for lock in ["coarse-lock", "gcc-rtm"]:
+    for lock in ["coarse-lock", "gcc-rtm", "gcc-rtm-optimized"]:
         print(lock, end="")
         for threads in threadNums:
             cmd = benchmark + " " + str(lock) + " " + str(threads) + " " + str(limit) + " " + str(add) + " " + str(remove)

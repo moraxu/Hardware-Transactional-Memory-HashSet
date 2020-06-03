@@ -2,34 +2,39 @@
 // Created by mguzek on 03.06.2020.
 //
 
-#ifndef HASHSETHTM_SEQUENTIALHASHSET_H
-#define HASHSETHTM_SEQUENTIALHASHSET_H
+#ifndef HASHSETHTM_SEQUENTIALHASHSET_LOWCONTENTION_H
+#define HASHSETHTM_SEQUENTIALHASHSET_LOWCONTENTION_H
 
 #include <algorithm>
 #include <functional>
 #include "HashSet.h"
 
-class SequentialHashSet : public HashSet {
+class SequentialHashSet_LowContention : public HashSet {
 protected:
     bool policy() override {
-        return setSize / table.size() > 4;
+        return size() / table.size() > 4;
     }
 
     void resize() override {
         std::vector<std::vector<int>> newTable(table.size()*2);
+        std::vector<int> newSizes(sizes.size()*2);
         for(auto& bucket : table) {
             for(auto& item : bucket) {
                 size_t destBucket = std::hash<int>{}(item) % newTable.size();
                 newTable[destBucket].push_back(item);
+                ++newSizes[destBucket];
             }
         }
         table = std::move(newTable);
+        sizes = std::move(newSizes);
+        cachedSize = -1;
     }
 
-    size_t setSize;
+    std::vector<int> sizes;
+    long long int cachedSize;
 
 public:
-    explicit SequentialHashSet(int initCapacity = 11) : HashSet{initCapacity}, setSize{0} {
+    explicit SequentialHashSet_LowContention(int initCapacity = 11) : HashSet{initCapacity}, sizes(initCapacity), cachedSize{0} {
 
     }
 
@@ -40,7 +45,8 @@ public:
         }
 
         table[myBucket].push_back(item);
-        ++setSize;
+        ++sizes[myBucket];
+        if(cachedSize >= 0) cachedSize = -1;
 
         if(policy()) {
             resize();
@@ -56,7 +62,8 @@ public:
         }
 
         table[myBucket].erase(it);
-        --setSize;
+        --sizes[myBucket];
+        if(cachedSize >= 0) cachedSize = -1;
         return true;
     }
 
@@ -66,8 +73,14 @@ public:
     }
 
     int size() override {
-        return setSize;
+        if(cachedSize < 0) {
+            cachedSize = 0;
+            for(int bucketSize : sizes) {
+                cachedSize += bucketSize;
+            }
+        }
+        return cachedSize;
     }
 };
 
-#endif //HASHSETHTM_SEQUENTIALHASHSET_H
+#endif //HASHSETHTM_SEQUENTIALHASHSET_LOWCONTENTION_H

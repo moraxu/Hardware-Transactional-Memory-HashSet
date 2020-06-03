@@ -10,6 +10,7 @@
 #include "CoarseGrainedHashSet.h"
 //#include "HashSetGCC_Libitm.h"
 #include "HashSetGCC_RTM.h"
+#include "HashSetGCC_RTM_Optimized.h"
 
 void threadJob(HashSet* set, int id)
 {
@@ -45,6 +46,8 @@ bool testSequential(HashSet* set) {
         if(!set->add(i))
             return false;
     }
+    if(set->size() != 100)
+        return false;
     for(int i = 100; i > 0; i--)
     {
         if(set->add(i))
@@ -56,14 +59,22 @@ bool testSequential(HashSet* set) {
     for(int i = 95; i > 0; i--)
         if(!set->remove(i))
             return false;
+    if(set->size() != 5)
+        return false;
     for(int i = 95; i > 0; i--)
         if(set->remove(i))
             return false;
     if(set->remove(101))
         return false;
+    if(set->size() != 5)
+        return false;
     if(set->remove(-1))
         return false;
+    if(set->size() != 5)
+        return false;
     if(!set->remove(99))
+        return false;
+    if(set->size() != 4)
         return false;
     return true;
 }
@@ -115,7 +126,7 @@ int main(int argc, char** argv)
 {
     if(argc != 6)
     {
-        std::cout << "Usage: test <coarse-lock | gcc-libitm | gcc-rtm | > <threads_count> <upper_limit> <add_percentage> <remove_percentage>\n";
+        std::cout << "Usage: test <coarse-lock | gcc-libitm | gcc-rtm | gcc-rtm-optimized |> <threads_count> <upper_limit> <add_percentage> <remove_percentage>\n";
         exit(1);
     }
 
@@ -129,6 +140,9 @@ int main(int argc, char** argv)
     }
     else if(std::string(argv[1]) == "gcc-rtm") {
         set = new HashSetGCC_RTM();
+    }
+    else if(std::string(argv[1]) == "gcc-rtm-optimized") {
+        set = new HashSetGCC_RTM_Optimized();
     }
     else {
         std::cout << "The lock implementation is unknown.\n";
