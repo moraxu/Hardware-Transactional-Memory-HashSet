@@ -11,7 +11,7 @@
 
 class SequentialHashSet : public HashSet {
 protected:
-    void resize() transaction_safe override {
+    void resize() override {
         std::vector<std::vector<int>> newTable(table.size()*2);
         for(auto& bucket : table) {
             for(auto& item : bucket) {
@@ -27,7 +27,7 @@ public:
 
     }
 
-    bool add(int item) transaction_safe override {
+    bool add(int item) override {
         size_t myBucket = std::hash<int>{}(item) % table.size();
         if(std::find(table[myBucket].begin(), table[myBucket].end(), item) != table[myBucket].end()) {
             return false;
@@ -42,7 +42,7 @@ public:
         return true;
     }
 
-    bool remove(int item) transaction_safe override {
+    bool remove(int item) override {
         size_t myBucket = std::hash<int>{}(item) % table.size();
         auto it = std::find(table[myBucket].begin(), table[myBucket].end(), item);
         if(it == table[myBucket].end()) {
@@ -54,7 +54,7 @@ public:
         return true;
     }
 
-    bool contains(int item) transaction_safe override {
+    bool contains(int item) override {
         size_t myBucket = std::hash<int>{}(item) % table.size();
         return std::find(table[myBucket].begin(), table[myBucket].end(), item) != table[myBucket].end();
     }

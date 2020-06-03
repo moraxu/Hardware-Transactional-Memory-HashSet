@@ -44,16 +44,16 @@ protected:
 
     }
 
-    bool policy() transaction_safe {    //only called when already holding a lock
+    bool policy() {    //only called when already holding a lock
         return setSize / table.size() > 4;
     }
 
-    virtual void resize() transaction_safe_dynamic = 0;
+    virtual void resize() = 0;
 
 public:
-    virtual bool add(int item) transaction_safe_dynamic = 0;
-    virtual bool remove(int item) transaction_safe_dynamic = 0;
-    virtual bool contains(int item) transaction_safe_dynamic = 0;
+    virtual bool add(int item) = 0;
+    virtual bool remove(int item) = 0;
+    virtual bool contains(int item) = 0;
 };
 
 #endif //HASHSETHTM_HASHSET_H

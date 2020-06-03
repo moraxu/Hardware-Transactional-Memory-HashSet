@@ -7,6 +7,7 @@
 #include <thread>
 #include <string>
 #include "CoarseGrainedHashSet.h"
+#include "HashSetGCC_Libitm.h"
 
 void threadJob(HashSet* set, int id)
 {
@@ -113,7 +114,7 @@ int main(int argc, char** argv)
     /*
     if(argc != 6)
     {
-        std::cout << "Usage: test <coarse-lock | > <threads_count> <upper_limit> <add_percentage> <remove_percentage>\n";
+        std::cout << "Usage: test <coarse-lock | gcc-libitm |> <threads_count> <upper_limit> <add_percentage> <remove_percentage>\n";
         exit(1);
     }
      */
@@ -121,13 +122,13 @@ int main(int argc, char** argv)
     HashSet* set;
 
     //if(std::string(argv[1]) == "coarse-lock") {
-        set = new CoarseGrainedHashSet();
+    //    set = new CoarseGrainedHashSet();
     //}
-    /*
-    else if(std::string(argv[1]) == "lock-free") {
-        set = new LockFreeSet();
-    }
-     */
+    //
+    //else if(std::string(argv[1]) == "libitm") {
+    //    set = new HashSetGCC_Libitm();
+    //}
+    //
     //else {
     //    std::cout << "The lock implementation is unknown.\n";
     //    exit(1);
@@ -140,7 +141,7 @@ int main(int argc, char** argv)
     */
 
     int threadCount = 2;
-    int upperLimit = 10000;
+    int upperLimit = 1000000;
     int addPerc = 20;
     int removePerc = 25;
 
@@ -148,6 +149,8 @@ int main(int argc, char** argv)
 
     /*std::cout << "Benchmark... ";*/
     benchmark(set, upperLimit, threadCount, addPerc, removePerc);
+
+    delete set;
 
     return 0;
 }
