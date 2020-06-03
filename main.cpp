@@ -4,10 +4,11 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
 #include <thread>
 #include <string>
 #include "CoarseGrainedHashSet.h"
-#include "HashSetGCC_Libitm.h"
+//#include "HashSetGCC_Libitm.h"
 
 void threadJob(HashSet* set, int id)
 {
@@ -122,7 +123,7 @@ int main(int argc, char** argv)
     HashSet* set;
 
     //if(std::string(argv[1]) == "coarse-lock") {
-    //    set = new CoarseGrainedHashSet();
+        set = new CoarseGrainedHashSet();
     //}
     //
     //else if(std::string(argv[1]) == "libitm") {
