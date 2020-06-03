@@ -3,4 +3,4 @@ project(HashsetHTM)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(HashsetHTM main.cpp HashSet.h CoarseGrainedHashSet.h IntermediateHashSet.h)
+add_executable(HashsetHTM main.cpp HashSet.h CoarseGrainedHashSet.h SequentialHashSet.h HashSetGCC_Libitm.h)
