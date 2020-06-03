@@ -8,7 +8,7 @@
 #include <thread>
 #include <string>
 #include "CoarseGrainedHashSet.h"
-#include "HashSetGCC_Libitm.h"
+//#include "HashSetGCC_Libitm.h"
 #include "HashSetGCC_RTM.h"
 
 void threadJob(HashSet* set, int id)
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
        set = new CoarseGrainedHashSet();
     }
     else if(std::string(argv[1]) == "gcc-libitm") {
-        set = new HashSetGCC_Libitm();
+        //set = new HashSetGCC_Libitm();
     }
     else if(std::string(argv[1]) == "gcc-rtm") {
         set = new HashSetGCC_RTM();
