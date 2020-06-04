@@ -82,13 +82,14 @@ bool testSequential(HashSet* set) {
 void threadBenchmark(HashSet* set, int id,  int upperLimit, int addPerc, int removePerc) {
     for(int i = 0; i < upperLimit; i++) {
         if((i % addPerc) == 0) {
-            set->add(i);
+            set->add(rand());
         }
-        else if((i % removePerc) == 0) {
-            set->remove(i);
+        if((i % removePerc) == 0) {
+            set->remove(rand());
         }
-        else {
-            set->contains(i);
+
+        if((i % addPerc) != 0 && (i % removePerc) != 0) {
+            set->contains(rand());
         }
     }
 }

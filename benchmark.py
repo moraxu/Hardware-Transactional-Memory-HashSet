@@ -5,7 +5,8 @@ import subprocess
 limit = 100000
 threadNums = [1, 2, 4, 6, 8]
 benchmark = "./test.o"
-for add, remove in [(18, 25), (4, 4)]:
+#9% add, 1% remove and 90% contains AND 50% add, 10% remove, 40% contains
+for add, remove in [(11, 100), (2, 10)]:
 
     #CSV header
     print("")
