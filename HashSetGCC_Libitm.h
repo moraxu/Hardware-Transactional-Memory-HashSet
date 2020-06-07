@@ -18,7 +18,7 @@ protected:
     }
 
 public:
-    explicit HashSetGCC_Libitm(int initCapacity = 11) : SequentialHashSet{initCapacity} {
+    explicit HashSetGCC_Libitm(size_t initCapacity = 11) : SequentialHashSet{initCapacity} {
 
     }
 

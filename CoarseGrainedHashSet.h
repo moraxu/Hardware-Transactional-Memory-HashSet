@@ -18,7 +18,7 @@ protected:
     }
 
 public:
-    explicit CoarseGrainedHashSet(int initCapacity = 11) : SequentialHashSet{initCapacity} {
+    explicit CoarseGrainedHashSet(size_t initCapacity = 11) : SequentialHashSet{initCapacity} {
 
     }
 

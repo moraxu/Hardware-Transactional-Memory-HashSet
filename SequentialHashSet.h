@@ -5,37 +5,39 @@
 #ifndef HASHSETHTM_SEQUENTIALHASHSET_H
 #define HASHSETHTM_SEQUENTIALHASHSET_H
 
-#include <algorithm>
-#include <functional>
 #include "HashSet.h"
 
 class SequentialHashSet : public HashSet {
 protected:
-    bool policy() override {
-        return setSize / table.size() > 4;
+    bool policy() transaction_safe override {
+        return setSize / tableSize > 4;
     }
 
-    void resize() override {
-        std::vector<std::vector<int>> newTable(table.size()*2);
-        for(auto& bucket : table) {
-            for(auto& item : bucket) {
-                size_t destBucket = std::hash<int>{}(item) % newTable.size();
-                newTable[destBucket].push_back(item);
+    void resize() transaction_safe override {
+        tableSize *= 2;
+        PrimitiveVector* newTable = new PrimitiveVector[tableSize];
+
+        for(size_t i = 0 ; i < tableSize ; ++i) {
+            for(size_t j = 0 ; j < table[i].getSize() ; ++j) {
+                size_t destBucket = hash(table[i][j]) % tableSize;
+                newTable[destBucket].push_back(table[i][j]);
             }
         }
-        table = std::move(newTable);
+
+        delete [] table;
+        table = newTable;
     }
 
     size_t setSize;
 
 public:
-    explicit SequentialHashSet(int initCapacity = 11) : HashSet{initCapacity}, setSize{0} {
+    explicit SequentialHashSet(size_t initCapacity = 11) : HashSet(initCapacity), setSize{0} {
 
     }
 
-    bool add(int item) override {
-        size_t myBucket = std::hash<int>{}(item) % table.size();
-        if(std::find(table[myBucket].begin(), table[myBucket].end(), item) != table[myBucket].end()) {
+    bool add(int item) transaction_safe override {
+        size_t myBucket = hash(item) % tableSize;
+        if(table[myBucket].find(item)) {
             return false;
         }
 
@@ -48,21 +50,19 @@ public:
         return true;
     }
 
-    bool remove(int item) override {
-        size_t myBucket = std::hash<int>{}(item) % table.size();
-        auto it = std::find(table[myBucket].begin(), table[myBucket].end(), item);
-        if(it == table[myBucket].end()) {
+    bool remove(int item) transaction_safe override {
+        size_t myBucket = hash(item) % tableSize;
+        if(!table[myBucket].remove(item)) {
             return false;
         }
 
-        table[myBucket].erase(it);
         --setSize;
         return true;
     }
 
-    bool contains(int item) override {
-        size_t myBucket = std::hash<int>{}(item) % table.size();
-        return std::find(table[myBucket].begin(), table[myBucket].end(), item) != table[myBucket].end();
+    bool contains(int item) transaction_safe override {
+        size_t myBucket = hash(item) % tableSize;
+        return table[myBucket].find(item);
     }
 
     int size() override {

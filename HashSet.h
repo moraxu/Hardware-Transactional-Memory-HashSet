@@ -5,9 +5,9 @@
 #ifndef HASHSETHTM_HASHSET_H
 #define HASHSETHTM_HASHSET_H
 
-#include <vector>
 #include <mutex>
 #include <atomic>
+#include "PrimitiveVector.h"
 
 class HashSet {
 protected:
@@ -37,10 +37,15 @@ protected:
         }
     };
 
-    std::vector<std::vector<int>> table;
+    PrimitiveVector* table;
+    size_t tableSize;
 
-    explicit HashSet(int initCapacity) : table(initCapacity) {
+    explicit HashSet(size_t initCapacity) : table{new PrimitiveVector[initCapacity]}, tableSize{initCapacity} {
 
+    }
+
+    static int hash(int item) {
+        return item;
     }
 
     virtual bool policy() = 0; //only called when already holding a lock
@@ -51,6 +56,10 @@ public:
     virtual bool remove(int item) = 0;
     virtual bool contains(int item) = 0;
     virtual int size() = 0;
+
+    virtual ~HashSet() {
+        delete [] table;
+    }
 };
 
 #endif //HASHSETHTM_HASHSET_H

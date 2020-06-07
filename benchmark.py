@@ -16,7 +16,7 @@ for add, remove in [(11, 100), (2, 10)]:
         print(", " + str(threads) + "T", end="")
     print("")
 
-    for lock in ["coarse-lock", "gcc-rtm", "gcc-rtm-optimized"]:
+    for lock in ["coarse-lock", "gcc-libitm", "gcc-rtm"]:
         print(lock, end="")
         for threads in threadNums:
             cmd = benchmark + " " + str(lock) + " " + str(threads) + " " + str(limit) + " " + str(add) + " " + str(remove)

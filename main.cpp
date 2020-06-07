@@ -8,9 +8,8 @@
 #include <thread>
 #include <string>
 #include "CoarseGrainedHashSet.h"
-//#include "HashSetGCC_Libitm.h"
+#include "HashSetGCC_Libitm.h"
 #include "HashSetGCC_RTM.h"
-#include "HashSetGCC_RTM_Optimized.h"
 
 void threadJob(HashSet* set, int id)
 {
@@ -127,7 +126,7 @@ int main(int argc, char** argv)
 {
     if(argc != 6)
     {
-        std::cout << "Usage: test <coarse-lock | gcc-libitm | gcc-rtm | gcc-rtm-optimized |> <threads_count> <upper_limit> <add_percentage> <remove_percentage>\n";
+        std::cout << "Usage: test <coarse-lock | gcc-libitm | gcc-rtm> <threads_count> <upper_limit> <add_percentage> <remove_percentage>\n";
         exit(1);
     }
 
@@ -137,13 +136,10 @@ int main(int argc, char** argv)
        set = new CoarseGrainedHashSet();
     }
     else if(std::string(argv[1]) == "gcc-libitm") {
-        //set = new HashSetGCC_Libitm();
+        set = new HashSetGCC_Libitm();
     }
     else if(std::string(argv[1]) == "gcc-rtm") {
         set = new HashSetGCC_RTM();
-    }
-    else if(std::string(argv[1]) == "gcc-rtm-optimized") {
-        set = new HashSetGCC_RTM_Optimized();
     }
     else {
         std::cout << "The lock implementation is unknown.\n";
