@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     int addPerc = std::stoi(argv[4]);
     int removePerc = std::stoi(argv[5]);
 
-    test(set);
+    //test(set);
 
     std::cout << "Benchmark... ";
     benchmark(set, upperLimit, threadCount, addPerc, removePerc);
