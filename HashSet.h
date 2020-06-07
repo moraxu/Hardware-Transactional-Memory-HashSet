@@ -39,8 +39,9 @@ protected:
 
     PrimitiveVector* table;
     size_t tableSize;
+    size_t setSize;
 
-    explicit HashSet(size_t initCapacity) : table{new PrimitiveVector[initCapacity]}, tableSize{initCapacity} {
+    explicit HashSet(size_t initCapacity) : table{new PrimitiveVector[initCapacity]}, tableSize{initCapacity}, setSize{0} {
 
     }
 
@@ -48,16 +49,20 @@ protected:
         return item;
     }
 
-    virtual bool policy() = 0; //only called when already holding a lock
+    bool policy() {   //only called when already holding a lock
+            return setSize / tableSize > 4;
+    }
     virtual void resize() = 0;
 
 public:
     virtual bool add(int item) = 0;
     virtual bool remove(int item) = 0;
     virtual bool contains(int item) = 0;
-    virtual int size() = 0;
+    size_t size() const {
+        return setSize;
+    }
 
-    virtual ~HashSet() {
+    ~HashSet() {
         delete [] table;
     }
 };

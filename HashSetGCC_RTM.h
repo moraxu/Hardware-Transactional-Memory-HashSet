@@ -45,7 +45,7 @@ protected:
     static constexpr size_t RTM_WAITNSEC = 2;
 
 public:
-    explicit HashSetGCC_RTM(int initCapacity = 11) : SequentialHashSet{initCapacity} {
+    explicit HashSetGCC_RTM(size_t initCapacity = 11) : SequentialHashSet{initCapacity} {
 
     }
 

@@ -14,7 +14,7 @@ private:
     size_t size;
     size_t capacity;
 
-    void resize() {
+    void resize() transaction_safe {
         int* new_arr = new int[capacity*2];
         std::memcpy(new_arr, arr, capacity*sizeof(int));
         delete [] arr;
@@ -27,14 +27,14 @@ public:
 
     }
 
-    void push_back(int item) {
+    void push_back(int item) transaction_safe {
         if(size == capacity) {
             resize();
         }
         arr[size++] = item;
     }
 
-    bool find(int item) const {
+    bool find(int item) const transaction_safe {
         for(int i = 0 ; i < size ; ++i) {
             if(arr[i] == item) {
                 return true;
@@ -43,7 +43,7 @@ public:
         return false;
     }
 
-    bool remove(int item) {
+    bool remove(int item) transaction_safe {
         for(int i = 0 ; i < size ; ++i) {
             if(arr[i] == item) {
                memmove(arr+i, arr+i+1, size-i-1);
@@ -54,11 +54,11 @@ public:
         return false;
     }
 
-    int& operator[](size_t index) {
+    int& operator[](size_t index) transaction_safe {
         return arr[index];
     }
 
-    size_t getSize() const {
+    size_t getSize() const transaction_safe {
         return size;
     }
 

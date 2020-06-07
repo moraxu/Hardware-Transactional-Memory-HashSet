@@ -9,11 +9,7 @@
 
 class SequentialHashSet : public HashSet {
 protected:
-    bool policy() transaction_safe override {
-        return setSize / tableSize > 4;
-    }
-
-    void resize() transaction_safe override {
+    void resize() override {
         tableSize *= 2;
         PrimitiveVector* newTable = new PrimitiveVector[tableSize];
 
@@ -28,14 +24,12 @@ protected:
         table = newTable;
     }
 
-    size_t setSize;
-
 public:
-    explicit SequentialHashSet(size_t initCapacity = 11) : HashSet(initCapacity), setSize{0} {
+    explicit SequentialHashSet(size_t initCapacity = 11) : HashSet{initCapacity} {
 
     }
 
-    bool add(int item) transaction_safe override {
+    bool add(int item) override {
         size_t myBucket = hash(item) % tableSize;
         if(table[myBucket].find(item)) {
             return false;
@@ -50,7 +44,7 @@ public:
         return true;
     }
 
-    bool remove(int item) transaction_safe override {
+    bool remove(int item) override {
         size_t myBucket = hash(item) % tableSize;
         if(!table[myBucket].remove(item)) {
             return false;
@@ -60,13 +54,9 @@ public:
         return true;
     }
 
-    bool contains(int item) transaction_safe override {
+    bool contains(int item) override {
         size_t myBucket = hash(item) % tableSize;
         return table[myBucket].find(item);
-    }
-
-    int size() override {
-        return setSize;
     }
 };
 
