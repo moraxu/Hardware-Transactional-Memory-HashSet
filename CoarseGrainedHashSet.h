@@ -9,8 +9,6 @@
 
 class CoarseGrainedHashSet : public HashSet {
 protected:
-    ReentrantMutex rmutex;
-
     void resize() override {
         rmutex.lock();
         HashSet::resize();    //will resize twice if someone beats us to it, but it's not a big issue

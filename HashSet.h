@@ -38,6 +38,7 @@ protected:
         }
     };
 
+    ReentrantMutex rmutex;
     std::vector<std::vector<int>> table;
     size_t setSize;
 
