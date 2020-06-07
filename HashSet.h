@@ -6,6 +6,7 @@
 #define HASHSETHTM_HASHSET_H
 
 #include <vector>
+#include <algorithm>
 #include <mutex>
 #include <atomic>
 
@@ -38,19 +39,63 @@ protected:
     };
 
     std::vector<std::vector<int>> table;
+    size_t setSize;
 
-    explicit HashSet(int initCapacity) : table(initCapacity) {
+    bool policy() { //only called when already holding a lock
+        return setSize / table.size() > 4;
+    }
+
+    virtual void resize() {
+        std::vector<std::vector<int>> newTable(table.size()*2);
+        for(auto& bucket : table) {
+            for(auto& item : bucket) {
+                size_t destBucket = std::hash<int>{}(item) % newTable.size();
+                newTable[destBucket].push_back(item);
+            }
+        }
+        table = std::move(newTable);
+    }
+
+public:
+    explicit HashSet(size_t initCapacity) : table(initCapacity), setSize{0} {
 
     }
 
-    virtual bool policy() = 0; //only called when already holding a lock
-    virtual void resize() = 0;
+    virtual bool add(int item) {
+        size_t myBucket = std::hash<int>{}(item) % table.size();
+        if(std::find(table[myBucket].begin(), table[myBucket].end(), item) != table[myBucket].end()) {
+            return false;
+        }
 
-public:
-    virtual bool add(int item) = 0;
-    virtual bool remove(int item) = 0;
-    virtual bool contains(int item) = 0;
-    virtual int size() = 0;
+        table[myBucket].push_back(item);
+        ++setSize;
+
+        if(policy()) {
+            resize();
+        }
+        return true;
+    }
+
+    virtual bool remove(int item) {
+        size_t myBucket = std::hash<int>{}(item) % table.size();
+        auto it = std::find(table[myBucket].begin(), table[myBucket].end(), item);
+        if(it == table[myBucket].end()) {
+            return false;
+        }
+
+        table[myBucket].erase(it);
+        --setSize;
+        return true;
+    }
+
+    virtual bool contains(int item) {
+        size_t myBucket = std::hash<int>{}(item) % table.size();
+        return std::find(table[myBucket].begin(), table[myBucket].end(), item) != table[myBucket].end();
+    }
+
+    size_t size() {
+        return setSize;
+    }
 };
 
 #endif //HASHSETHTM_HASHSET_H

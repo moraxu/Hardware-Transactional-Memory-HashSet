@@ -5,40 +5,40 @@
 #ifndef HASHSETHTM_COARSEGRAINEDHASHSET_H
 #define HASHSETHTM_COARSEGRAINEDHASHSET_H
 
-#include "SequentialHashSet.h"
+#include "HashSet.h"
 
-class CoarseGrainedHashSet : public SequentialHashSet {
+class CoarseGrainedHashSet : public HashSet {
 protected:
     ReentrantMutex rmutex;
 
     void resize() override {
         rmutex.lock();
-        SequentialHashSet::resize();    //will resize twice if someone beats us to it, but it's not a big issue
+        HashSet::resize();    //will resize twice if someone beats us to it, but it's not a big issue
         rmutex.unlock();
     }
 
 public:
-    explicit CoarseGrainedHashSet(int initCapacity = 11) : SequentialHashSet{initCapacity} {
+    explicit CoarseGrainedHashSet(size_t initCapacity = 11) : HashSet{initCapacity} {
 
     }
 
     bool add(int item) override {
         rmutex.lock();
-        bool returnVal = SequentialHashSet::add(item);
+        bool returnVal = HashSet::add(item);
         rmutex.unlock();
         return returnVal;
     }
 
     bool remove(int item) override {
         rmutex.lock();
-        bool returnVal = SequentialHashSet::remove(item);
+        bool returnVal = HashSet::remove(item);
         rmutex.unlock();
         return returnVal;
     }
 
     bool contains(int item) override {
         rmutex.lock();
-        bool returnVal = SequentialHashSet::contains(item);
+        bool returnVal = HashSet::contains(item);
         rmutex.unlock();
         return returnVal;
     }

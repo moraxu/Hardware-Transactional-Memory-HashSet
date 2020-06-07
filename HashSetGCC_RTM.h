@@ -7,13 +7,13 @@
 
 //Compile with -mrtm to work
 
-#include <cstdlib>
 #include <immintrin.h>
 #include <thread>
 #include <chrono>
-#include "SequentialHashSet.h"
+#include <random>
+#include "HashSet.h"
 
-class HashSetGCC_RTM : public SequentialHashSet {
+class HashSetGCC_RTM : public HashSet {
 protected:
     void resize() override {
         size_t status;
@@ -22,30 +22,32 @@ protected:
             status = _xbegin();
             if (status == _XBEGIN_STARTED) {
                 if (!(rmutex.isLocked())) {
-                    SequentialHashSet::resize();
+                    HashSet::resize();
                     _xend();
                     return;
                 }
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::nanoseconds((rand() % RTM_WAITNSEC) + 1));
+                std::this_thread::sleep_for(std::chrono::nanoseconds((dist(rng) % RTM_WAITNSEC) + 1));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
             }
         }
         rmutex.lock();
-        SequentialHashSet::resize();
+        HashSet::resize();
         rmutex.unlock();
     }
 
     ReentrantMutex rmutex;
+    std::mt19937 rng;
+    std::uniform_int_distribution<std::mt19937::result_type> dist; //default range is [0, MAX]
     static constexpr size_t RTM_ATTEMPTS = 3;
     static constexpr size_t RTM_WAITNSEC = 2;
 
 public:
-    explicit HashSetGCC_RTM(int initCapacity = 11) : SequentialHashSet{initCapacity} {
+    explicit HashSetGCC_RTM(size_t initCapacity = 11) : HashSet{initCapacity}, rng{std::random_device{}()} {
 
     }
 
@@ -57,21 +59,21 @@ public:
             status = _xbegin();
             if (status == _XBEGIN_STARTED) {
                 if (!(rmutex.isLocked())) {
-                    result = SequentialHashSet::add(item);
+                    result = HashSet::add(item);
                     _xend();
                     return result;
                 }
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::nanoseconds((rand() % RTM_WAITNSEC) + 1));
+                std::this_thread::sleep_for(std::chrono::nanoseconds((dist(rng) % RTM_WAITNSEC) + 1));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
             }
         }
         rmutex.lock();
-        result = SequentialHashSet::add(item);
+        result = HashSet::add(item);
         rmutex.unlock();
         return result;
     }
@@ -84,21 +86,21 @@ public:
             status = _xbegin();
             if (status == _XBEGIN_STARTED) {
                 if (!(rmutex.isLocked())) {
-                    result = SequentialHashSet::remove(item);
+                    result = HashSet::remove(item);
                     _xend();
                     return result;
                 }
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::nanoseconds((rand() % RTM_WAITNSEC) + 1));
+                std::this_thread::sleep_for(std::chrono::nanoseconds((dist(rng) % RTM_WAITNSEC) + 1));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
             }
         }
         rmutex.lock();
-        result = SequentialHashSet::remove(item);
+        result = HashSet::remove(item);
         rmutex.unlock();
         return result;
     }
@@ -111,21 +113,21 @@ public:
             status = _xbegin();
             if (status == _XBEGIN_STARTED) {
                 if (!(rmutex.isLocked())) {
-                    result = SequentialHashSet::contains(item);
+                    result = HashSet::contains(item);
                     _xend();
                     return result;
                 }
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::nanoseconds((rand() % RTM_WAITNSEC) + 1));
+                std::this_thread::sleep_for(std::chrono::nanoseconds((dist(rng) % RTM_WAITNSEC) + 1));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
             }
         }
         rmutex.lock();
-        result = SequentialHashSet::contains(item);
+        result = HashSet::contains(item);
         rmutex.unlock();
         return result;
     }
