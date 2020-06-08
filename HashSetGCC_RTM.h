@@ -29,7 +29,7 @@ protected:
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(dist(rng)));
+                std::this_thread::sleep_for(std::chrono::nanoseconds(dist(rng)));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
@@ -64,7 +64,7 @@ public:
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(dist(rng)));
+                std::this_thread::sleep_for(std::chrono::nanoseconds(dist(rng)));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
@@ -91,7 +91,7 @@ public:
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(dist(rng)));
+                std::this_thread::sleep_for(std::chrono::nanoseconds(dist(rng)));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
@@ -118,7 +118,7 @@ public:
                 _xabort(0xFF);
             }
             if((status & _XABORT_EXPLICIT) && _XABORT_CODE(status) == 0xff) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(dist(rng)));
+                std::this_thread::sleep_for(std::chrono::nanoseconds(dist(rng)));
             }
             else if(!(status & _XABORT_RETRY)) {
                 break;
