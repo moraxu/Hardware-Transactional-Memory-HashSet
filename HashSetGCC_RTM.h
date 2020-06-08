@@ -5,9 +5,9 @@
 #ifndef HASHSETHTM_HASHSETGCC_RTM_H
 #define HASHSETHTM_HASHSETGCC_RTM_H
 
-//Compile with -mrtm to work
+//Compile with -mrtm under g++ to work
 
-#include <immintrin.h>
+#include <immintrin.h>  //present under g++
 #include <thread>
 #include <chrono>
 #include <random>

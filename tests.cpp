@@ -8,6 +8,8 @@
 #include <thread>
 #include "HashSet.h"
 
+//Very basic unit tests
+
 void threadJob(HashSet* set, int id)
 {
     for(int i = 0; i < 10; i++) {
