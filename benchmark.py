@@ -4,7 +4,7 @@ import subprocess
 # Produces a CSV formatted table with ops/millisecs throughput values in each cell
 limit = 100000
 threadNums = [1, 2, 4, 6, 8]
-benchmark = "./test.o"
+benchmark = "./a.out"
 #9% add, 1% remove and 90% contains AND 50% add, 10% remove, 40% contains
 for add, remove in [(11, 100), (2, 10)]:
 
