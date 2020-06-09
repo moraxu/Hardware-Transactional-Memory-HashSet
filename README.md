@@ -1,4 +1,4 @@
-Program compares the performance of a concurrent HashSet data structure (hash collisions resolved by separate chaining) implementation that uses a single coarse-graind lock with the implementation that utilizes Intel's TSX to leverage Hardware Transactional Memory.
+Program compares the performance of a concurrent HashSet data structure (hash collisions resolved by separate chaining) implementation that uses a single coarse-grained lock with the implementation that utilizes Intel's TSX to leverage Hardware Transactional Memory.
 
 Command used to compile the program (for the program to run, CPU needs to have Intel's TSX support):
 $ g++ -std=c++11 -mrtm -pthread main.cpp tests.cpp
